@@ -3,8 +3,8 @@
 ###################
 
 resource "aws_security_group" "n5_gateway" {
-  name   = "terraform-Network5-gateway-sg"
-  vpc_id = aws_vpc.terraform_vpc.id
+  name   = "n5-gateway-sg"
+  vpc_id = aws_vpc.test_network_vpc.id
 
   # SSH access from specific IPs
   ingress {
@@ -24,7 +24,7 @@ resource "aws_security_group" "n5_gateway" {
     from_port        = 53
     to_port          = 53
     protocol         = "udp"
-    ipv6_cidr_blocks = [aws_vpc.terraform_vpc.ipv6_cidr_block]
+    ipv6_cidr_blocks = [aws_vpc.test_network_vpc.ipv6_cidr_block]
     description      = "DNS queries"
   }
 
@@ -33,7 +33,7 @@ resource "aws_security_group" "n5_gateway" {
     from_port        = 53
     to_port          = 53
     protocol         = "tcp"
-    ipv6_cidr_blocks = [aws_vpc.terraform_vpc.ipv6_cidr_block]
+    ipv6_cidr_blocks = [aws_vpc.test_network_vpc.ipv6_cidr_block]
     description      = "DNS queries TCP from VPC"
   }
 
@@ -42,7 +42,7 @@ resource "aws_security_group" "n5_gateway" {
     from_port        = -1
     to_port          = -1
     protocol         = "58" # ICMPv6 protocol number
-    ipv6_cidr_blocks = [aws_vpc.terraform_vpc.ipv6_cidr_block]
+    ipv6_cidr_blocks = [aws_vpc.test_network_vpc.ipv6_cidr_block]
     description      = "ICMPv6 (ping6)"
   }
 
@@ -60,7 +60,7 @@ resource "aws_security_group" "n5_gateway" {
     from_port        = 0
     to_port          = 0
     protocol         = "-1"
-    ipv6_cidr_blocks = [aws_vpc.terraform_vpc.ipv6_cidr_block]
+    ipv6_cidr_blocks = [aws_vpc.test_network_vpc.ipv6_cidr_block]
     description      = "All IPv6 traffic from VPC"
   }
 
@@ -75,7 +75,20 @@ resource "aws_security_group" "n5_gateway" {
   }
 
   tags = {
-    Name = "terraform-Network5-dns64-nat64-sg"
+    Name               = "Network 5 Gateway Security Group"
+    ProductFamilyName  = "DNS SEC"
+    ApplicationName    = "OPI"
+    Environment        = "Non-Prod"
+    CiscoMailAlias     = "umbrell-opi-cicd@cisco.com"
+    DataClassification = "Cisco Highly Confidential"
+    DataTaxonomy       = "Cisco Strategic Data"
+    ResourceOwner      = "Umbrella"
+    TeamName           = "ERC"
+    TechnicalContact   = "aturino@cisco.com"
+    SecurityContact    = "aturino@cisco.com"
+    IntendedPublic     = "False"
+    LastRevalidatedBy  = "darhunt@cisco.com"
+    LastRevalidatedAt  = formatdate("YYYY MMM DD", timestamp())
   }
 }
 
@@ -98,7 +111,20 @@ resource "aws_instance" "n5_gateway" {
   })
 
   tags = {
-    Name = "terraform-Network5-dns64-nat64"
+    Name               = "Network 5 Gateway"
+    ProductFamilyName  = "DNS SEC"
+    ApplicationName    = "OPI"
+    Environment        = "Non-Prod"
+    CiscoMailAlias     = "umbrell-opi-cicd@cisco.com"
+    DataClassification = "Cisco Highly Confidential"
+    DataTaxonomy       = "Cisco Strategic Data"
+    ResourceOwner      = "Umbrella"
+    TeamName           = "ERC"
+    TechnicalContact   = "aturino@cisco.com"
+    SecurityContact    = "aturino@cisco.com"
+    IntendedPublic     = "False"
+    LastRevalidatedBy  = "darhunt@cisco.com"
+    LastRevalidatedAt  = formatdate("YYYY MMM DD", timestamp())
   }
 }
 
@@ -112,3 +138,9 @@ output "n5_gateway_ipv4" {
   description = "IPv4 address of the Network 5 server"
   value       = aws_instance.n5_gateway.public_ip
 }
+
+output "n5_gateway_network_interface_id" {
+  description = "Network interface id of n5 gateway"
+  value       = aws_instance.n5_gateway.primary_network_interface_id
+}
+
